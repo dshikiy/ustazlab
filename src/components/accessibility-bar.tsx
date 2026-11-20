@@ -1,0 +1,11 @@
+"use client";
+import { useEffect, useState } from "react";
+import { Accessibility, Minus, Plus, Contrast, Volume2, Square, Activity } from "lucide-react";
+import { toast } from "sonner";
+export function AccessibilityBar(){
+  const [open,setOpen]=useState(false),[scale,setScale]=useState(0),[contrast,setContrast]=useState(false),[reduced,setReduced]=useState(false),[speaking,setSpeaking]=useState(false);
+  useEffect(()=>{queueMicrotask(()=>{const saved=JSON.parse(localStorage.getItem("ustazlab_a11y")||"{}");setScale(saved.scale||0);setContrast(!!saved.contrast);setReduced(!!saved.reduced)})},[]);
+  useEffect(()=>{document.documentElement.style.setProperty("--font-scale",String(1+scale*.08));document.documentElement.classList.toggle("high-contrast",contrast);document.documentElement.classList.toggle("reduce-motion",reduced);localStorage.setItem("ustazlab_a11y",JSON.stringify({scale,contrast,reduced}))},[scale,contrast,reduced]);
+  function speak(){if(!("speechSynthesis"in window)){toast.error("Дыбыстау бұл браузерде қолжетімсіз");return}if(speaking){speechSynthesis.cancel();setSpeaking(false);return}const text=document.querySelector("main")?.textContent?.replace(/\s+/g," ").trim();if(!text)return;const utterance=new SpeechSynthesisUtterance(text);utterance.lang=document.documentElement.lang==="ru"?"ru-RU":"kk-KZ";utterance.onend=()=>setSpeaking(false);speechSynthesis.speak(utterance);setSpeaking(true)}
+  return <aside className="a11y-bar" aria-label="Қолжетімділік құралдары"><button className="a11y-trigger" aria-expanded={open} onClick={()=>setOpen(!open)}><Accessibility/><span>Қолжетімділік</span></button>{open&&<div className="a11y-tools"><button aria-label="Қаріпті кішірейту" onClick={()=>setScale(x=>Math.max(-1,x-1))}><Minus/>A−</button><button aria-label="Қаріпті үлкейту" onClick={()=>setScale(x=>Math.min(3,x+1))}><Plus/>A+</button><button aria-pressed={contrast} onClick={()=>setContrast(!contrast)}><Contrast/>Жоғары контраст</button><button aria-pressed={reduced} onClick={()=>setReduced(!reduced)}><Activity/>Қозғалысты азайту</button><button aria-pressed={speaking} onClick={speak}>{speaking?<Square/>:<Volume2/>}{speaking?"Тоқтату":"Мәтінді дыбыстау"}</button></div>}</aside>
+}

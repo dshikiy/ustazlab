@@ -1,0 +1,1 @@
+"use client";import{motion}from"motion/react";export function MotionCard({children}:{children:React.ReactNode}){return <motion.article className="card" initial={{opacity:0,y:14}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:.15}} whileHover={{y:-5}} transition={{duration:.35}}>{children}</motion.article>}

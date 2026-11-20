@@ -1,0 +1,1 @@
+import{cookies}from"next/headers";import type{Locale}from"./types";import{kk}from"./kk";import{ru}from"./ru";export async function getLocale():Promise<Locale>{return(await cookies()).get("ustazlab_locale")?.value==="ru"?"ru":"kk"}export async function getMessages(){return(await getLocale())==="ru"?ru:kk}
