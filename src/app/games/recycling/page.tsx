@@ -1,0 +1,1 @@
+import{Header}from"@/components/header";import{Recycling}from"@/features/games/recycling";export default function Page(){return <><Header/><main className="container section" style={{maxWidth:900}}><Recycling/></main></>}

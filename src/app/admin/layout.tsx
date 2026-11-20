@@ -1,0 +1,1 @@
+import{requireAdmin}from"@/lib/auth";import Link from"next/link";export default async function Layout({children}:{children:React.ReactNode}){await requireAdmin();return <main className="container section"><Link href="/dashboard">← Кабинетке қайту</Link>{children}</main>}

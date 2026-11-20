@@ -1,0 +1,1 @@
+export function Footer(){return <footer className="footer"><div className="container"><b>UstazLab</b><p className="muted">Қазақстан мұғалімдеріне арналған цифрлық білім беру платформасы · 2026</p></div></footer>}

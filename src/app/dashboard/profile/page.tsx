@@ -1,0 +1,1 @@
+import{requireUser}from"@/lib/auth";export default async function Page(){const u=await requireUser();return <><h2>Профиль</h2><div className="card form"><label>Аты-жөні<input value={u.name} readOnly/></label><label>Email<input value={u.email} readOnly/></label><label>Рөлі<input value={u.role} readOnly/></label></div></>}

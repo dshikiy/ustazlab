@@ -1,0 +1,1 @@
+import type{MetadataRoute}from"next";export default function sitemap():MetadataRoute.Sitemap{const base=process.env.APP_URL||"http://localhost:3000";return["","/about","/games","/games/recycling","/games/animals","/games/nature","/games/true-false","/materials"].map(path=>({url:base+path,lastModified:new Date()}))}

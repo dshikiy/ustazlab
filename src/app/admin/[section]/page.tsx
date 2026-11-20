@@ -1,0 +1,1 @@
+export default async function Page({params}:{params:Promise<{section:string}>}){const{section}=await params;return <><h2>Басқару: {section}</h2><div className="card"><p>Бұл бөлімдегі барлық өзгеріс әкімші рөлін серверде тексергеннен кейін ғана орындалады.</p><p className="muted">Деректерді басқару интерфейсі қауіпсіз әкімші орналасуында.</p></div></>}

@@ -1,0 +1,1 @@
+import Link from"next/link";export default function Page(){return <><h2>Материалдар</h2><div className="card"><h3>Сабаққа дайын ресурстар</h3><p className="muted">Сынып, пән және санат бойынша материалдарды таңдаңыз.</p><Link className="btn" href="/materials">Каталогты ашу</Link></div></>}

@@ -1,0 +1,1 @@
+import{Header}from"@/components/header";import{ChoiceGame}from"@/features/games/game-engine";import{truths}from"@/features/games/data";export default function Page(){return <><Header/><main className="container section" style={{maxWidth:800}}><ChoiceGame title="Дұрыс па, бұрыс па?" questions={truths}/></main></>}
