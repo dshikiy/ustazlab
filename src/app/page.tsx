@@ -195,26 +195,96 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Platform Advantages */}
+        {/* Asymmetric Bento Feature Showcase */}
         <section id="features" className="section">
           <div className="container">
             <div className="mb-10 max-w-[680px]">
               <div className="eyebrow">{m.home.advantagesEyebrow}</div>
               <h2>{m.home.advantagesTitle}</h2>
             </div>
-            <div className="grid feature-grid">
-              {advantages.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <article className="card grid gap-3 content-start" key={item.title}>
-                    <div className="w-11 h-11 rounded-xl bg-[var(--primary-soft)] text-[var(--primary)] grid place-items-center">
-                      <Icon size={22} />
+
+            <div className="bento-grid">
+              {/* 1. Lesson Builder — Wide Card */}
+              <article className="card bento-span-7 grid gap-4 content-between">
+                <div className="grid gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="pill">
+                      <BookOpen size={14} /> {isRu ? "Конструктор КСП" : "ҚМЖ конструкторы"}
+                    </span>
+                  </div>
+                  <h3 className="text-xl m-0">{advantages[0].title}</h3>
+                  <p className="muted text-sm m-0">{advantages[0].description}</p>
+                </div>
+                <div className="grid gap-2 p-3.5 rounded-2xl bg-[var(--surface-subtle)] border border-[var(--border)]">
+                  {[
+                    [isRu ? "01 · Начало урока" : "01 · Сабақтың басы", "5 мин"],
+                    [isRu ? "02 · Основная часть" : "02 · Сабақтың ортасы", "25 мин"],
+                    [isRu ? "03 · Рефлексия" : "03 · Сабақтың соңы", "10 мин"],
+                  ].map(([label, time]) => (
+                    <div key={label} className="flex items-center justify-between px-3 py-2 rounded-xl bg-[var(--surface)] border border-[var(--border)] text-xs font-semibold">
+                      <span>{label}</span>
+                      <span className="pill teal">{time}</span>
                     </div>
-                    <h3 className="m-0">{item.title}</h3>
-                    <p className="muted text-sm m-0 leading-relaxed">{item.description}</p>
-                  </article>
-                );
-              })}
+                  ))}
+                </div>
+              </article>
+
+              {/* 2. Quiz Builder — Compact Card */}
+              <article className="card bento-span-5 grid gap-4 content-between">
+                <div className="grid gap-2">
+                  <span className="pill teal w-max">
+                    <ClipboardCheck size={14} /> {isRu ? "Тесты" : "Тесттер"}
+                  </span>
+                  <h3 className="text-xl m-0">{advantages[1].title}</h3>
+                  <p className="muted text-sm m-0">{advantages[1].description}</p>
+                </div>
+                <div className="grid gap-2 p-3.5 rounded-2xl bg-[var(--surface-subtle)] border border-[var(--border)]">
+                  <div className="flex items-center justify-between text-xs font-semibold">
+                    <span>SINGLE · MULTIPLE · SHORT</span>
+                    <span className="pill success">Server Scored</span>
+                  </div>
+                  <div className="progress"><div style={{ width: "86%" }} /></div>
+                </div>
+              </article>
+
+              {/* 3. Inclusive Education */}
+              <article className="card bento-span-5 grid gap-4 content-between">
+                <div className="grid gap-2">
+                  <span className="pill w-max">
+                    <HeartHandshake size={14} /> WCAG 2.2 AA
+                  </span>
+                  <h3 className="text-xl m-0">{advantages[3].title}</h3>
+                  <p className="muted text-sm m-0">{advantages[3].description}</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {["A+", "A−", "TTS", "AAC", isRu ? "Контраст" : "Контраст"].map((chip) => (
+                    <span key={chip} className="pill">{chip}</span>
+                  ))}
+                </div>
+              </article>
+
+              {/* 4. Educational Games & Analytics */}
+              <article className="card bento-span-7 grid gap-4 content-between">
+                <div className="grid gap-2">
+                  <span className="pill warning w-max">
+                    <Gamepad2 size={14} /> {isRu ? "Игры и аналитика" : "Ойындар және аналитика"}
+                  </span>
+                  <h3 className="text-xl m-0">{advantages[2].title}</h3>
+                  <p className="muted text-sm m-0">{advantages[4].description}</p>
+                </div>
+                <div className="grid grid-cols-3 gap-2.5">
+                  {[
+                    ["🐺", isRu ? "Животные" : "Жануарлар"],
+                    ["♻️", isRu ? "Сортировка" : "Сұрыптау"],
+                    ["🧠", isRu ? "Память" : "Жад ойыны"],
+                  ].map(([emoji, title]) => (
+                    <div key={title} className="p-3 rounded-xl bg-[var(--surface-subtle)] border border-[var(--border)] text-center grid gap-1">
+                      <span className="text-2xl" aria-hidden="true">{emoji}</span>
+                      <span className="text-xs font-semibold">{title}</span>
+                    </div>
+                  ))}
+                </div>
+              </article>
             </div>
           </div>
         </section>

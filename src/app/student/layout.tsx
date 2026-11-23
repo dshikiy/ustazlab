@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GraduationCap } from "lucide-react";
+import { BrandLogo } from "@/components/brand-logo";
 import { requireStudent } from "@/lib/auth";
 import { getLocale } from "@/lib/i18n/server";
 import { LocaleSwitcher } from "@/lib/i18n/client";
@@ -27,17 +27,7 @@ export default async function StudentLayout({
     <>
       <header className="site-header">
         <div className="container nav">
-          <Link className="logo flex items-center gap-2" href="/student">
-            <span
-              className="grid place-items-center w-9 h-9 rounded-xl bg-[var(--secondary)] text-white"
-              aria-hidden="true"
-            >
-              <GraduationCap size={20} />
-            </span>
-            <span>
-              Ustaz<span>Lab</span> Kids
-            </span>
-          </Link>
+          <BrandLogo href="/student" suffix="Kids" />
           <div className="flex items-center gap-3">
             <span className="desktop-only text-sm font-semibold">
               {isRu ? `Привет, ${student.name}!` : `Сәлем, ${student.name}!`}

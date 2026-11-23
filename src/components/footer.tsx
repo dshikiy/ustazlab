@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GraduationCap } from "lucide-react";
+import { BrandLogo } from "./brand-logo";
 import { getMessages } from "@/lib/i18n/server";
 
 export async function Footer() {
@@ -13,17 +13,7 @@ export async function Footer() {
           style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}
         >
           <div className="grid gap-3 content-start">
-            <Link className="logo flex items-center gap-2 no-underline text-inherit" href="/">
-              <span
-                className="grid place-items-center w-9 h-9 rounded-xl bg-[var(--primary)] text-white"
-                aria-hidden="true"
-              >
-                <GraduationCap size={20} />
-              </span>
-              <span>
-                Ustaz<span>Lab</span>
-              </span>
-            </Link>
+            <BrandLogo href="/" />
             <p className="muted text-sm m-0 max-w-xs">{m.footer.description}</p>
           </div>
 

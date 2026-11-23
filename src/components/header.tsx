@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GraduationCap } from "lucide-react";
+import { BrandLogo } from "./brand-logo";
 import { ThemeToggle } from "./theme-toggle";
 import { getSession } from "@/lib/auth";
 import { getLocale, getMessages } from "@/lib/i18n/server";
@@ -30,17 +30,7 @@ export async function Header() {
   return (
     <header className="site-header">
       <div className="container nav">
-        <Link className="logo flex items-center gap-2.5" href="/">
-          <span
-            className="grid place-items-center w-10 h-10 rounded-xl bg-[var(--primary)] text-white shrink-0"
-            aria-hidden="true"
-          >
-            <GraduationCap size={22} />
-          </span>
-          <span>
-            Ustaz<span>Lab</span>
-          </span>
-        </Link>
+        <BrandLogo href="/" />
 
         <nav className="navlinks" aria-label={m.nav.menu}>
           <Link href="/">{m.nav.home}</Link>

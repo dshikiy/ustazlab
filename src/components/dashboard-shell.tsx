@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GraduationCap } from "lucide-react";
+import { BrandLogo } from "./brand-logo";
 import { logoutAction } from "@/lib/actions";
 import { requireTeacher } from "@/lib/auth";
 import { getLocale, getMessages } from "@/lib/i18n/server";
@@ -41,17 +41,7 @@ export async function DashboardShell({ children }: { children: React.ReactNode }
     <>
       <header className="site-header">
         <div className="container nav">
-          <Link className="logo flex items-center gap-2.5" href="/">
-            <span
-              className="grid place-items-center w-9 h-9 rounded-xl bg-[var(--primary)] text-white"
-              aria-hidden="true"
-            >
-              <GraduationCap size={20} />
-            </span>
-            <span>
-              Ustaz<span>Lab</span>
-            </span>
-          </Link>
+          <BrandLogo href="/" />
           <div className="flex items-center gap-3">
             <LocaleSwitcher locale={locale} />
             <ThemeToggle />
