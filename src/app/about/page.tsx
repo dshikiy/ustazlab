@@ -1,1 +1,62 @@
-import Link from"next/link";import{Header}from"@/components/header";import{Footer}from"@/components/footer";import{HeartHandshake,BookOpenCheck,ShieldCheck,Accessibility,GraduationCap,School,Users}from"lucide-react";const principles=[[BookOpenCheck,"Педагогикалық дәлдік","Әр құрал бастауыш білім беру тәжірибесіне сай жасалады."],[Accessibility,"Қолжетімділік","Пернетақта, сенсорлық экран және шағын құрылғыларға бейімделген."],[ShieldCheck,"Қауіпсіздік","Балалардан артық жеке мәлімет сұралмайды."],[HeartHandshake,"Мұғалімге құрмет","Күнделікті жұмысты жеңілдетіп, мұғалім шешімін қолдайды."]] as const;export default function About(){return <><Header/><main><section className="hero"><div className="container" style={{maxWidth:850,textAlign:"center"}}><div className="eyebrow">Біздің миссия</div><h1>Мұғалім уақытын маңызды іске арнайды</h1><p className="muted" style={{fontSize:"1.2rem"}}>UstazLab сабақ дайындау мен бағалауды жеңілдетіп, мұғалімге оқушымен мағыналы жұмыс істеуге көбірек уақыт береді.</p></div></section><section className="section"><div className="container"><h2>Педагогикалық қағидалар</h2><div className="grid" style={{gridTemplateColumns:"repeat(auto-fit,minmax(230px,1fr))"}}>{principles.map(([Icon,t,d])=><article className="card" key={t}><Icon color="#7c3aed"/><h3 style={{marginTop:16}}>{t}</h3><p className="muted">{d}</p></article>)}</div></div></section><section className="section"><div className="container"><h2>UstazLab кімге арналған?</h2><div className="grid" style={{gridTemplateColumns:"repeat(auto-fit,minmax(250px,1fr))"}}>{[[GraduationCap,"Бастауыш сынып мұғалімдері"],[Users,"Педагогика студенттері"],[School,"Мектептер мен әдістемелік бірлестіктер"]].map(([Icon,t]:any)=><div className="card" key={t}><Icon color="#7c3aed" size={34}/><h3 style={{marginTop:16}}>{t}</h3><p className="muted">ҚМЖ, тест, ойын және нақты нәтиже бір қауіпсіз ортада.</p></div>)}</div></div></section><section className="section"><div className="container card" style={{textAlign:"center"}}><h2>Сабақ жоспары, тест, ойын және аналитика</h2><p className="muted">Қазақ және орыс тілдеріндегі толық оқу үдерісі — бір платформада.</p><Link className="btn" href="/register">Тегін тіркелу</Link></div></section></main><Footer/></>}
+import Link from "next/link";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
+import { getLocale } from "@/lib/i18n/server";
+
+export default async function AboutPage() {
+  const locale = await getLocale();
+  const isRu = locale === "ru";
+
+  return (
+    <>
+      <Header />
+      <main id="main-content" className="container section grid gap-8 max-w-4xl">
+        <div className="grid gap-3">
+          <div className="eyebrow">UstazLab 2.0</div>
+          <h1 className="m-0">
+            {isRu
+              ? "Образовательная платформа для школ Казахстана"
+              : "Қазақстан мектептеріне арналған білім платформасы"}
+          </h1>
+          <p className="muted text-lg m-0">
+            {isRu
+              ? "UstazLab объединяет конструктор уроков КСП, тесты с серверной проверкой, интерактивные игры, библиотеку материалов и инструменты инклюзивного обучения."
+              : "UstazLab ҚМЖ конструкторын, серверлік бағаланатын тесттерді, интерактивті ойындарды, материалдар кітапханасын және инклюзивті оқыту құралдарын біріктіреді."}
+          </p>
+        </div>
+
+        <section id="privacy" className="card grid gap-3">
+          <h2 className="text-xl m-0">
+            {isRu ? "Политика конфиденциальности" : "Құпиялылық саясаты"}
+          </h2>
+          <p className="muted text-sm m-0 leading-relaxed">
+            {isRu
+              ? "Платформа собирает только минимально необходимые данные для входа и сохранения учебных материалов. Мы не собираем медицинские диагнозы или чувствительные данные о детях."
+              : "Платформа тек жүйеге кіру және оқу материалдарын сақтау үшін қажетті ең аз деректерді өңдейді. Біз балалардың медициналық диагноздарын немесе артық дербес деректерін жинамаймыз."}
+          </p>
+        </section>
+
+        <section id="terms" className="card grid gap-3">
+          <h2 className="text-xl m-0">
+            {isRu ? "Условия использования" : "Пайдалану шарттары"}
+          </h2>
+          <p className="muted text-sm m-0 leading-relaxed">
+            {isRu
+              ? "Учителя сохраняют полные права на созданные ими планы уроков и тесты. Сгенерированные AI черновики предназначены исключительно для проверки и редактирования педагогом."
+              : "Мұғалімдер өздері жасаған сабақ жоспарлары мен тесттерге толық құқықты сақтайды. AI арқылы ұсынылған нобайлар міндетті түрде мұғалімнің тексеруіне арналған."}
+          </p>
+        </section>
+
+        <div className="flex flex-wrap gap-3">
+          <Link href="/register" className="btn">
+            {isRu ? "Создать аккаунт" : "Аккаунт құру"}
+          </Link>
+          <Link href="/" className="btn secondary">
+            {isRu ? "Вернуться на главную" : "Басты бетке оралу"}
+          </Link>
+        </div>
+      </main>
+      <Footer />
+    </>
+  );
+}

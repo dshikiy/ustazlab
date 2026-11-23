@@ -1,0 +1,1 @@
+import{AiAssistant}from"@/components/ai-assistant";export default function Page(){return <><div className="eyebrow">Қосымша, міндетті емес құрал</div><h1>AI педагогикалық көмекші</h1><AiAssistant/></>}

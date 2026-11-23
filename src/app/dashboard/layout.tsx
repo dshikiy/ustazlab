@@ -1,1 +1,1 @@
-import{DashboardShell}from"@/components/dashboard-shell";export default function Layout({children}:{children:React.ReactNode}){return <DashboardShell>{children}</DashboardShell>}
+import{DashboardShell}from"@/components/dashboard-shell";import{requireTeacher}from"@/lib/auth";export default async function Layout({children}:{children:React.ReactNode}){await requireTeacher();return <DashboardShell>{children}</DashboardShell>}
