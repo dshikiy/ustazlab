@@ -1,1 +1,19 @@
-const stages=["Алдын ала дайындық: қысқа әрі нақты күн тәртібін көрнекі түрде көрсету.","Бір нұсқаулық — бір әрекет: тапсырманы шағын қадамдарға бөлу.","Таңдау ұсыну: жауапты айту, көрсету немесе карточкамен белгілеу.","Қосымша уақыт: жарыссыз және асықтырмай орындауға мүмкіндік беру.","Жылы кері байланыс: әрекет пен талпынысты нақты атап қолдау."];export default function Page(){return <><div className="eyebrow">Мұғалімге арналған үлгі</div><h1>Инклюзивті сабақ құрылымы</h1><div className="grid">{stages.map((text,index)=><article className="card" key={text}><span className="pill">{index+1}-қадам</span><h2 style={{fontSize:"1.25rem",marginTop:16}}>{text}</h2></article>)}</div></>}
+import { getLocale } from "@/lib/i18n/server";
+import { InclusiveLessonViewer } from "@/components/inclusive-module";
+
+export default async function InclusiveLessonsPage() {
+  const locale = await getLocale();
+  const isRu = locale === "ru";
+
+  return (
+    <div className="grid gap-6">
+      <div>
+        <div className="eyebrow">{isRu ? "Пошаговый формат" : "Қадамдық формат"}</div>
+        <h1 className="text-3xl m-0">
+          {isRu ? "Инклюзивный урок" : "Инклюзивті сабақ"}
+        </h1>
+      </div>
+      <InclusiveLessonViewer locale={locale} />
+    </div>
+  );
+}
