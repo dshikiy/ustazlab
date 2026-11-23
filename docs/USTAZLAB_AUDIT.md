@@ -1,93 +1,87 @@
-# UstazLab 2.0 — repository audit
+# UstazLab 2.0 — Comprehensive Repository Audit
 
-Audit date: 2026-11-23. Branch: `feat/ustazlab-2-platform`.
+**Audit date:** 2026-11-23  
+**Branch:** `feat/ustazlab-2-platform`  
+**Stack:** Next.js 16.0.3 (App Router) · React 19.2 · TypeScript 5.9 · Tailwind CSS v4 · Drizzle ORM 0.44 + Neon PostgreSQL · Radix UI · Lucide Icons · Recharts · Vitest · Playwright
 
-## Current architecture
+---
 
-- Next.js 16 App Router with React 19 and strict TypeScript (`src/app`, `tsconfig.json`).
-- Neon PostgreSQL through Drizzle's Neon HTTP adapter (`src/db/index.ts`).
-- Credential authentication uses bcrypt and signed, HTTP-only, same-site JWT cookies (`src/lib/auth.ts`, `src/lib/actions.ts`).
-- Production is connected to Vercel and GitHub; `.env.local` and `.vercel` are ignored.
-- Kazakh is the default locale. An SSR cookie switcher and partial Russian dictionary exist under `src/lib/i18n`.
+## 1. Repository & Route Inventory
 
-## Route inventory
+### Public Routes
+- `/` — `src/app/page.tsx`: Minimal 3-section landing page (hero, 6 feature cards, gradient CTA). Lacks interactive previews, workflow demo, inclusive section, FAQ, and tagline reveal.
+- `/about` — `src/app/about/page.tsx`: Basic informational page.
+- `/materials` — `src/app/materials/page.tsx`: Public materials library + communication cards tab.
+- `/games` — `src/app/games/page.tsx` plus `/games/animals`, `/games/nature`, `/games/recycling`, `/games/true-false`: 4 playable games.
+- `/login`, `/register` — `src/app/login/page.tsx`, `src/app/register/page.tsx`: Credential auth pages.
+- `/play/[quizId]` & `/play/[quizId]/result` — Public quiz play and server-scored result screens.
+- `/inclusive` + `/inclusive/lessons`, `/inclusive/activities`, `/inclusive/communication`, `/inclusive/accessibility`, `/inclusive/progress`: Initial 1-line stubs for inclusive education.
 
-Public routes: `/`, `/about`, `/materials`, `/games` and four game routes, `/login`, `/register`, `/play/[quizId]`, and quiz results.
+### Protected Teacher Routes (`/dashboard/*`)
+- `/dashboard` — Overview (currently 4 stat cards + 3 quick links; missing recent lessons, quizzes, materials, activity history, search).
+- `/dashboard/lessons`, `/dashboard/lessons/new`, `/dashboard/lessons/[id]` — Missing `/dashboard/lessons/[id]/edit`.
+- `/dashboard/quizzes`, `/dashboard/quizzes/new`, `/dashboard/quizzes/[id]` — Missing `/dashboard/quizzes/[id]/edit`.
+- `/dashboard/materials`, `/dashboard/results`, `/dashboard/analytics`, `/dashboard/assistant`, `/dashboard/profile`, `/dashboard/settings`.
 
-Teacher routes: dashboard overview, lessons list/create/detail, quizzes list/create/detail, materials, results, analytics, profile, and settings.
+### Protected Student Routes (`/student/*`)
+- `/student`, `/student/assignments`, `/student/games`, `/student/progress`, `/student/achievements` — Initial 1-line stubs; missing logout, locale switcher, and interactive assignment/progress flows.
 
-Admin routes: `/admin` and the generic `/admin/[section]` management page.
+### Protected Admin Routes (`/admin/*`)
+- `/admin`, `/admin/[section]` — Protected by `requireAdmin()`.
 
-API routes: authenticated PDF and DOCX lesson export.
+### API Routes
+- `/api/lessons/[id]/pdf` — Authenticated PDF export (`pdf-lib`).
+- `/api/lessons/[id]/docx` — Authenticated DOCX export (`docx`).
+- `/api/ai` — Server-side AI assistant endpoint with rate limiting and Zod validation.
 
-Missing from the requested 2.0 information architecture: inclusive module routes, student workspace, lesson edit route, quiz edit/preview routes, and an optional AI route.
+---
 
-## Working functionality verified from code
+## 2. Database Schema (`src/db/schema.ts`)
 
-- Every dashboard route is protected before child rendering by `src/app/dashboard/layout.tsx` → `DashboardShell` → `requireUser()`.
-- Admin layouts and admin mutations call `requireAdmin()` (`src/app/admin/layout.tsx`, `src/lib/admin-actions.ts`).
-- Lesson reads, deletes, PDF exports, and DOCX exports compare the authenticated user with `teacherId`.
-- Quiz submissions calculate scores on the server and do not select correct-option fields on the guest play page.
-- Lesson creation, quiz creation, guest attempts, materials, analytics, theme preferences, locale preferences, and accessibility preferences persist.
-- Four games are playable. Recycling supports pointer/keyboard drag-and-drop plus tap selection.
-- `npm run lint`, `npm test`, and `npm run build` passed before this audit.
+Verified existing tables:
+- Core: `users`, `teacher_profiles`, `lessons`, `lesson_stages`, `quizzes`, `quiz_questions`, `quiz_options`, `quiz_attempts`, `quiz_answers`, `game_content`, `game_results`, `materials`, `material_favorites`, `activity_logs`, `platform_settings`.
+- 2.0 additions already defined in schema: `student_profiles`, `classes`, `class_memberships`, `assignments`, `assignment_submissions`, `inclusive_activities`, `accessibility_preferences`, `learning_progress`, `achievements`.
 
-## Security findings
+Gaps identified:
+- `lessons` lacks `status` (`DRAFT` / `PUBLISHED`) and `teachingMethods` columns (safe additive columns needed for full lesson builder workflow).
+- `accessibility_preferences` exists in schema but is not yet synced from the UI via server actions.
+- `game_results` exists in schema but live games do not persist completed scores to the database.
 
-1. `src/lib/auth.ts` falls back to a known development secret when `AUTH_SECRET` is missing. Production should fail closed instead.
-2. JWT role/status is trusted for seven days without re-reading the user record. A disabled account can retain an existing session until expiry.
-3. Login and registration have no rate limiter.
-4. Registration reveals whether an email already exists (`?error=exists`). This is acceptable for low-risk onboarding only if explicitly chosen, but conflicts with the 2.0 non-enumeration requirement.
-5. Lesson exports correctly enforce ownership. Quiz edit/delete actions do not exist yet, so their ownership checks are also missing.
-6. Admin user toggling prevents self-disable but does not yet prevent disabling the final active admin.
-7. No file upload endpoint exists, so there is currently no upload attack surface.
+---
 
-## Data-model findings
+## 3. Security & Authorization Findings
 
-Existing relational tables cover users, teacher profiles, lessons/stages, quizzes/questions/options/attempts/answers, game content/results, materials/favorites, activity logs, and settings (`src/db/schema.ts`).
+1. **Auth secret & session validation (`src/lib/auth.ts`)**: Production fails closed when `AUTH_SECRET` is missing/short, and `getSession()` re-validates user existence and `status === "ACTIVE"` from PostgreSQL. Cookies are `httpOnly`, `sameSite: "lax"`, `secure` in production.
+2. **Missing auth rate limiting (`src/lib/actions.ts`)**: `loginAction` and `registerAction` do not have rate limiting against brute-force attempts.
+3. **Account enumeration**: `registerAction` already redirects with generic `?error=invalid` rather than `?error=exists`, avoiding enumeration. `loginAction` returns generic `?error=credentials`.
+4. **Ownership enforcement**: Lesson reads/deletes/duplicates/exports and quiz reads/deletes/duplicates check `eq(table.teacherId, user.id)`. New edit actions for lessons and quizzes must enforce the exact same ownership check.
+5. **Quiz answer security (`src/app/play/[quizId]/page.tsx`, `src/lib/actions.ts`)**: Public play page queries only `{ id, text }` from `quiz_options` (never `isCorrect`). Scoring runs strictly server-side in `submitQuizAction`.
+6. **AI key protection (`src/lib/ai/provider.ts`, `src/app/api/ai/route.ts`)**: Runs strictly on the server; returns `503` when unconfigured without fabricating responses.
 
-Missing requested entities: student profiles, classes, memberships, assignments, submissions, inclusive activities, per-user accessibility preferences, learning progress, and achievements.
+---
 
-`game_content.content` is flexible JSON. This avoids migrations but does not enforce a bilingual content contract. Materials are DB-backed, while communication cards currently live in a client constant.
+## 4. Design System, Maintainability & UX Findings
 
-## UX and accessibility findings
+1. **Code formatting & maintainability**: Nearly all source files (`src/app/globals.css`, `src/lib/actions.ts`, `src/app/page.tsx`, `src/components/*`) are compressed onto single minified lines, making maintenance error-prone.
+2. **CSS conflicts (`src/app/globals.css`)**: Multiple `:root` blocks fight using `!important` (green `#16885c` overriding `#2563eb`), uses `Inter, Arial, sans-serif`, and applies background gradients.
+3. **Missing reusable design system**: `src/components/ui/` contains only 6 minimal 1-line components (`badge`, `button`, `card`, `empty-state`, `progress`, `skeleton`). Missing: `Input`, `Select`, `Checkbox`, `Radio`, `Modal`/`Dialog`, `Dropdown`, `Tooltip`, `Tabs`, `Sidebar`, `Navbar`, `Breadcrumbs`, `Pagination`, `DataTable`, `Toast`, `Search`, `Filter`, `FileUpload`, `AccessibilityControls`.
+4. **Missing 404 page**: No custom `src/app/not-found.tsx`.
+5. **Accessibility**: Floating `AccessibilityBar` works locally, but needs full KZ/RU localization, skip-to-content link in root layout, proper ARIA landmarks, keyboard navigation in games, and DB preference persistence for authenticated users.
 
-- The global accessibility toolbar provides font scaling, high contrast, reduced motion, and browser text-to-speech (`src/components/accessibility-bar.tsx`).
-- Focus styling and minimum button heights are present in `src/app/globals.css`.
-- The dashboard sidebar is hidden on mobile and replaced by a drawer.
-- Several pages and forms remain compressed into one-line components, which hurts maintainability.
-- Admin tables are not responsive at 320–390 px.
-- Many dashboard, game, admin, validation, and accessibility strings remain hardcoded in Kazakh, so Russian parity is incomplete.
-- The visual system is mostly global CSS rather than typed reusable primitives; Button/Card/Badge/EmptyState/DataTable abstractions are incomplete.
+---
 
-## Feature completeness findings
+## 5. Feature Completeness Findings
 
-- Lessons: create/detail/export/print/delete work. Edit, duplicate, arbitrary stage add/delete/reorder, and explicit draft status are missing.
-- Quizzes: create/detail/publish-at-create/play/results work. Edit, delete, duplicate, preview, dynamic question count, multiple choice, true/false, and short answer are missing.
-- Materials: DB listing and communication-card tabs work. Search/filter/favorite mutations and real preview are incomplete.
-- Games: core loops work, but DB-admin changes are not consumed consistently by every live game.
-- Analytics uses real quiz-attempt aggregates and Recharts.
-- Admin has basic create/delete for materials and game content and status toggling for users. Edit dialogs, question-bank CRUD, filters, and last-admin protection are incomplete.
-- Optional AI provider abstraction is absent.
+1. **Lesson Builder (`src/components/lesson-form.tsx`)**: Hardcoded to 3 stages; cannot add, edit, delete, or reorder stages. No `/dashboard/lessons/[id]/edit` route. No draft/published status toggle or teaching methods field.
+2. **Quiz Builder (`src/components/quiz-form.tsx`)**: No `/dashboard/quizzes/[id]/edit` route. `MULTIPLE` choice questions only allow selecting a single numeric index as correct (`correct${index}`), breaking multi-select grading. No publish/unpublish toggle on detail page.
+3. **Educational Games (`src/features/games/*`)**: 4 existing games work, but lack an instruction screen, keyboard controls, full RU localization, DB result persistence, and additional game types (Memory Cards, Matching Pairs).
+4. **Inclusive Education (`src/app/inclusive/*`)**: `UstazLab_inclusive-1.html` is not present in the repository. Existing pages are minimal stubs; need full interactive inclusive lesson, 4-question inclusive quiz, adaptive games, categorized AAC communication cards with sentence builder + TTS, accessibility controls, and progress tracking.
+5. **Localization (`src/lib/i18n/*`)**: `kk.ts` and `ru.ts` cover only ~35 keys; most dashboard, builder, game, inclusive, student, and materials UI strings are hardcoded in Kazakh.
 
-## Testing findings
+---
 
-- Vitest currently has one scoring suite with three tests (`tests/scoring.test.ts`).
-- Playwright specs cover portions of public accessibility, games, registration/lesson creation, and admin access.
-- The current execution environment cannot install Playwright Chromium for `ubuntu20.04-x64`; E2E files therefore exist but have not been executed here.
-- Integration tests for permissions, database transactions, quiz grading variants, and session invalidation are missing.
+## 6. Testing Status
 
-## Missing supplied reference
-
-`UstazLab_inclusive-1.html` was not found in the repository or supplied attachments. Exact conversion cannot be verified until that file is added. The 2.0 inclusive module will use the written requirements and existing accessibility/communication-card implementation as a safe interim reference; the HTML must be reconciled later.
-
-## Prioritized implementation plan
-
-1. Fail-closed authentication and session status validation.
-2. Reusable UI primitives and coherent responsive shell.
-3. Inclusive module and additive student/class/progress schema.
-4. Lesson edit/duplicate and richer stages.
-5. Quiz ownership-aware management and additional question types.
-6. DB-backed inclusive activities, communication cards, and game content.
-7. Optional server-only AI provider with disabled state when unconfigured.
-8. Localization completion and expanded automated tests.
+- `npm run lint`: Passes (0 errors).
+- `npm test` (Vitest): Passes (1 file, 3 tests in `tests/scoring.test.ts`).
+- Missing tests: auth/rate-limit/permission tests, full quiz scoring tests (SINGLE, MULTIPLE, TRUE_FALSE, SHORT), AI provider tests, localization parity tests, UI component tests, and E2E verification.
