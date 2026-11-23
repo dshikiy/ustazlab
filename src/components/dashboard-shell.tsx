@@ -6,6 +6,8 @@ import { getLocale, getMessages } from "@/lib/i18n/server";
 import { LocaleSwitcher } from "@/lib/i18n/client";
 import { ThemeToggle } from "./theme-toggle";
 import { DashboardNav } from "./dashboard-nav";
+import { SidebarLinks } from "./sidebar-links";
+import { Avatar } from "@/components/ui/controls";
 
 export async function DashboardShell({ children }: { children: React.ReactNode }) {
   const [user, locale, m] = await Promise.all([
@@ -30,6 +32,11 @@ export async function DashboardShell({ children }: { children: React.ReactNode }
     ["/dashboard/settings", m.dashboard.settings],
   ];
 
+  const extraLinks: (readonly [string, string])[] = [
+    ...(user.role === "ADMIN" ? ([["/admin", m.dashboard.admin]] as const) : []),
+    ["/dashboard/profile", m.dashboard.profile] as const,
+  ];
+
   return (
     <>
       <header className="site-header">
@@ -48,7 +55,13 @@ export async function DashboardShell({ children }: { children: React.ReactNode }
           <div className="flex items-center gap-3">
             <LocaleSwitcher locale={locale} />
             <ThemeToggle />
-            <span className="desktop-only text-sm font-semibold">{user.name}</span>
+            <Link
+              href="/dashboard/profile"
+              className="desktop-only flex items-center gap-2 no-underline text-inherit"
+            >
+              <Avatar name={user.name} size="sm" />
+              <span className="text-sm font-semibold">{user.name}</span>
+            </Link>
             <DashboardNav links={links} admin={user.role === "ADMIN"} />
           </div>
         </div>
@@ -56,13 +69,10 @@ export async function DashboardShell({ children }: { children: React.ReactNode }
 
       <div className="dashboard">
         <aside className="sidebar" aria-label={m.dashboard.overview}>
-          {links.map(([href, label]) => (
-            <Link href={href} key={href}>
-              {label}
-            </Link>
-          ))}
-          {user.role === "ADMIN" && <Link href="/admin">{m.dashboard.admin}</Link>}
-          <Link href="/dashboard/profile">{m.dashboard.profile}</Link>
+          <SidebarLinks links={links} />
+          <div className="mt-4 pt-4 border-t border-[var(--border)]">
+            <SidebarLinks links={extraLinks} />
+          </div>
           <form action={logoutAction} className="mt-auto pt-4 border-t border-[var(--border)]">
             <button type="submit" className="btn secondary w-full">
               {m.nav.logout}
