@@ -1,0 +1,1 @@
+export function Skeleton({height=18}:{height?:number}){return <div aria-hidden="true" style={{height,borderRadius:10,background:"linear-gradient(90deg,var(--border),var(--surface),var(--border))",backgroundSize:"200% 100%",animation:"pulse 1.4s infinite"}}/>}
