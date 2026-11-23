@@ -1,2 +1,8 @@
+import type { kk } from "./kk";
+
+type DeepString<T> = {
+  [K in keyof T]: T[K] extends string ? string : DeepString<T[K]>;
+};
+
 export type Locale = "kk" | "ru";
-type Widen<T>={readonly[K in keyof T]:T[K] extends string?string:T[K] extends object?Widen<T[K]>:T[K]};export type Messages=Widen<typeof import("./kk").kk>;
+export type Messages = DeepString<typeof kk>;
