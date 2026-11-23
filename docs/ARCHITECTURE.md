@@ -18,3 +18,4 @@
 - `src/features/games/` — Reusable educational game engine (`ChoiceGame`, `MemoryGame`, `MatchingGame`, `Recycling`).
 - `src/lib/` — Server Actions (`actions.ts`, `classroom-actions.ts`, `material-actions.ts`, `admin-actions.ts`), auth guards, rate limiter, quiz scoring, AI provider, and KZ/RU i18n dictionaries.
 - `src/db/` — Drizzle schema, Neon client, and idempotent seed script.
+

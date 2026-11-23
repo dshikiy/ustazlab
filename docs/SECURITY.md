@@ -18,3 +18,4 @@
 
 ## Secrets & AI
 - AI credentials (`AI_API_URL`, `AI_API_KEY`, `AI_MODEL`) are read exclusively on the server (`src/lib/ai/provider.ts`). Never exposed to client bundles.
+

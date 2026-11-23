@@ -249,3 +249,4 @@ export async function deleteAccountAction(fd: FormData) {
   (await cookies()).delete("ustaz_session");
   redirect("/");
 }
+

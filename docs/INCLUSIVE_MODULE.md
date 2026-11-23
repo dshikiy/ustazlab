@@ -13,3 +13,4 @@ The file `UstazLab_inclusive-1.html` was not present in the repository workspace
 - `/inclusive/communication` — Categorized AAC communication cards with sentence builder bar and browser TTS (`kk-KZ` / `ru-RU`).
 - `/inclusive/settings` & `/inclusive/accessibility` — Font scaling (`A-` / `A+`), high-contrast mode, reduced motion, and TTS persisted to `localStorage` and `accessibility_preferences` (for authenticated users).
 - `/inclusive/progress` — Learning progress tracker without collecting medical diagnoses or sensitive student data.
+

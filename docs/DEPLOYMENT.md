@@ -25,3 +25,4 @@
 3. Deploy via Vercel (or Node.js server with `npm run start`).
 4. Verify `/api/health` returns HTTP `200` with `{"status":"ok"}`.
 5. Backups: Use Neon point-in-time restore (PITR) and automated daily snapshots before applying schema migrations.
+

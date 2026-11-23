@@ -21,3 +21,4 @@ High-contrast mode (`.high-contrast`) enforces black-on-white surfaces with 2px 
 ## Reusable Components (`src/components/ui/`)
 
 `Button`, `IconButton`, `Input`, `Textarea`, `FormField`, `Select`, `Checkbox`, `Radio`, `Switch`, `Tabs`, `Accordion`, `Modal`/`Dialog`, `Dropdown`, `Tooltip`, `Card`, `Badge`, `Avatar`, `Breadcrumbs`, `Sidebar`, `Navbar`, `Pagination`, `DataTable`, `SearchInput`, `FilterSelect`, `FileUpload`, `Progress`, `Skeleton`, `EmptyState`, `ErrorState`, `ConfirmationDialog`, plus `AccessibilityBar` / `AccessibilityControls`.
+

@@ -404,3 +404,4 @@ export function InclusiveAccessibilityPanel({ locale }: { locale: Locale }) {
     </div>
   );
 }
+

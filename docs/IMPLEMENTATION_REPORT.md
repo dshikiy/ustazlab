@@ -19,3 +19,4 @@
 
 - `UstazLab_inclusive-1.html` was not present in the workspace; the inclusive module was built natively in React/TypeScript from the specification and should be reconciled if that file is supplied later.
 - Playwright browser execution (`npm run test:e2e`) requires Chromium binaries that are not installed in this offline Linux sandbox; therefore E2E execution and Playwright screenshots (`docs/previews/ustazlab-3/`) are blocked in this environment and documented honestly.
+
